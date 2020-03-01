@@ -23,9 +23,9 @@ class ArticlesController < ApplicationController
   def create
     @article = Article.new(article_params)
     @article.user = current_user
-
     if @article.save
-      redirect_to @article, notice: '記事を作成しました'
+      @article.resize_thumbnail!
+      redirect_to @article, notice: "記事を作成しました"
     else
       render :new
     end
@@ -33,7 +33,8 @@ class ArticlesController < ApplicationController
 
   def update
     if @article.update(article_params)
-      redirect_to @article, notice: '記事を更新しました'
+      @article.resize_thumbnail!
+      redirect_to @article, notice: "記事を更新しました"
     else
       render :edit
     end
@@ -51,6 +52,6 @@ class ArticlesController < ApplicationController
   end
 
   def article_params
-    params.require(:article).permit(:title, :body, :tag_list)
+    params.require(:article).permit(:title, :body, :tag_list, :thumbnail)
   end
 end
