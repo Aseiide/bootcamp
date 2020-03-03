@@ -7,12 +7,12 @@ class ArticlesTest < ApplicationSystemTestCase
     @article = articles(:article1)
   end
 
-  # 仮デザインなので一時的に無効化
-  # test 'show listing articles' do
-  #   login_user 'komagata', 'testtest'
-  #   visit_with_auth articles_url
-  #   assert_text 'ブログ記事一覧'
-  # end
+  test 'show listing articles' do
+    login_user 'komagata', 'testtest'
+    visit articles_url
+    #assert_text 'ブログ記事一覧'
+    assert_selector ".articles"
+  end
 
   test 'create article' do
     visit_with_auth new_article_url, 'komagata'
@@ -49,5 +49,33 @@ class ArticlesTest < ApplicationSystemTestCase
 
     visit edit_article_path(@article)
     assert_text '管理者としてログインしてください'
+  end
+
+  test 'delete article' do
+    visit_with_auth articles_url, 'komagata'
+    page.accept_confirm do
+      click_on '削除', match: :first
+    end
+
+    assert_text '記事を削除しました'
+  end
+
+  test "can't delete article" do
+    visit_with_auth articles_url, 'kimura'
+    assert_no_text '削除'
+  end
+
+  test 'search by tag' do
+    login_user 'komagata', 'testtest'
+    visit articles_url
+    click_on '内容修正', match: :first
+
+    fill_in "article[title]", with: "タイトル"
+    fill_in "article[body]", with: "内容"
+    fill_in "article[tag_list]", with: "tag"
+    click_on "更新する"
+    click_on "tag"
+
+    assert_equal 1, all(".articles__item").length
   end
 end
