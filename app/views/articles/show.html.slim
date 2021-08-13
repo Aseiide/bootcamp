@@ -12,17 +12,16 @@ section.o-static-page
             | お知らせ
 
   .o-static-page-body
-    .l-container.is-xxl
-      .o-static-page-body__inner
-        .o-static-article
-          .o-static-article__header
-            .o-static-article__header-start
-              .l-container.is-md
-                h1.o-static-article__title.u-ff-YakuHanJP_Narrow
+    .o-static-page-body__inner
+      article.o-static-article
+        header.m-article-header
+          .l-container.is-md
+            .m-article-header__inner.a-left-bold-border
+              .m-article-header__row
+                h1.m-article-header__title.u-ff-YakuHanJP_Narrow
                   span.js-mikan
                     = @article.title
-            .o-static-article__header-end
-              .l-container.is-md
+              .m-article-header__row
                 .m-media-attributes__list
                   .m-inline-list
                     .m-inline-list__items
@@ -35,20 +34,20 @@ section.o-static-page
                           .m-media-attributes__author-name
                             | machida
 
-          .o-static-article__body
-            .l-container.is-md
-              - if @article.thumbnail.attached?
-                .o-static-article__main-image-container
-                  = image_tag(@article.thumbnail_url, class: 'o-static-article__main-image')
-              .a-long-text.js-markdown-view.js-target-blank
-                = @article.body
-          - if admin_login?
-            .o-static-article__footer
-              .m-inline-icon-list
-                ul.m-inline-icon-list__items
-                  li.m-inline-icon-list__item
-                    = link_to edit_article_path(@article), class: "a-button is-md is-warning is-icon", id: "js-shortcut-edit" do
-                      i.fas.fa-pen#edit
+        .o-static-article__body
+          .l-container.is-md
+            - if @article.thumbnail.attached?
+              .o-static-article__main-image-container
+                = image_tag(@article.thumbnail_url, class: 'o-static-article__main-image')
+            .a-long-text.js-markdown-view.js-target-blank
+              = @article.body
+        - if admin_login?
+          .o-static-article__footer
+            .m-inline-icon-list
+              ul.m-inline-icon-list__items
+                li.m-inline-icon-list__item
+                  = link_to edit_article_path(@article), class: "a-button is-md is-warning is-icon", id: "js-shortcut-edit" do
+                    i.fas.fa-pen#edit
 nav.o-basic-breadcrumbs
   .l-container.is-mxw-100pc
     ol.o-basic-breadcrumbs__items
