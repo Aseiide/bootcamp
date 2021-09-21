@@ -1,6 +1,6 @@
 <template lang="pug">
 .page-body
-  nav.pagination(v-if='totalPages > 1')
+  nav.o-pagination(v-if='totalPages > 1')
     pager(v-bind='pagerProps')
   .container
     .users
@@ -22,7 +22,7 @@
             i.far.fa-sad-tear
           p.o-empty-message__text
             | {{ targetName }}のユーザーはいません
-  nav.pagination(v-if='totalPages > 1')
+  nav.o-pagination(v-if='totalPages > 1')
     pager(v-bind='pagerProps')
 </template>
 <script>

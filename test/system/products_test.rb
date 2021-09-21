@@ -233,11 +233,11 @@ class ProductsTest < ApplicationSystemTestCase
     end
 
     visit_with_auth '/products', 'komagata'
-    within first('.pagination') do
+    within first('.o-pagination') do
       find('a', text: '2').click
     end
 
-    all('.pagination .is-active').each do |active_button|
+    all('.o-pagination .is-active').each do |active_button|
       assert active_button.has_text? '2'
     end
     assert_current_path('/products?page=2')
@@ -253,7 +253,7 @@ class ProductsTest < ApplicationSystemTestCase
     end
     login_user 'komagata', 'testtest'
     visit '/products?page=2'
-    all('.pagination .is-active').each do |active_button|
+    all('.o-pagination .is-active').each do |active_button|
       assert active_button.has_text? '2'
     end
     assert_current_path('/products?page=2')
@@ -269,12 +269,12 @@ class ProductsTest < ApplicationSystemTestCase
     end
     login_user 'komagata', 'testtest'
     visit '/products?page=2'
-    within first('.pagination') do
+    within first('.o-pagination') do
       find('a', text: '1').click
     end
     page.go_back
     assert_current_path('/products?page=2')
-    all('.pagination .is-active').each do |active_button|
+    all('.o-pagination .is-active').each do |active_button|
       assert active_button.has_text? '2'
     end
   end
@@ -291,7 +291,7 @@ class ProductsTest < ApplicationSystemTestCase
 
     visit_with_auth '/products', 'komagata'
 
-    assert_not page.has_css?('.pagination')
+    assert_not page.has_css?('.o-pagination')
   end
 
   test 'be person on charge at comment on product of there are not person on charge' do
