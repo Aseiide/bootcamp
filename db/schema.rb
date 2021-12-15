@@ -457,6 +457,7 @@ ActiveRecord::Schema.define(version: 2021_12_17_034500) do
     t.text "mentor_memo"
     t.string "discord_account"
     t.string "times_url"
+    t.text "after_graduation_hope"
     t.index ["course_id"], name: "index_users_on_course_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["github_id"], name: "index_users_on_github_id", unique: true
