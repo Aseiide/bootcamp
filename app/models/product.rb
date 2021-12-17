@@ -157,8 +157,12 @@ class Product < ApplicationRecord
     save!
   end
 
+  def checker_exists?
+    checker_id.present?
+  end
+
   def other_checker_exists?(current_user_id)
-    checker_id.present? && checker_id.to_s != current_user_id
+    checker_exists? && checker_id.to_s != current_user_id
   end
 
   def checker_name
