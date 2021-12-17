@@ -10,6 +10,12 @@ class ProductCallbacks
     Cache.delete_self_assigned_no_replied_product_count(product.checker_id)
   end
 
+  def after_update(product)
+    return unless product.saved_change_to_attribute?('checker_id')
+
+    Cache.delete_unassigned_product_count
+  end
+
   def after_save(product)
     if !product.wip? && product.published_at.nil?
       notify_to_watching_mentor(product)
