@@ -172,6 +172,14 @@ ActiveRecord::Schema.define(version: 2021_12_20_015005) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
+  create_table "featured_entries", force: :cascade do |t|
+    t.string "featureable_type", null: false
+    t.bigint "featureable_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["featureable_type", "featureable_id"], name: "index_featured_entries_on_featureable"
+  end
+
   create_table "followings", force: :cascade do |t|
     t.integer "follower_id"
     t.integer "followed_id"
@@ -232,6 +240,7 @@ ActiveRecord::Schema.define(version: 2021_12_20_015005) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean "completion_message_displayed", default: false, null: false
     t.index ["user_id", "practice_id"], name: "index_learnings_on_user_id_and_practice_id", unique: true
   end
 
