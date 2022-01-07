@@ -69,7 +69,7 @@ Rails.application.routes.draw do
     resources :bookmarks, only: %i(index create destroy)
     resources :events, only: %i(index)
     resources :report_templates, only: %i(create update)
-    resources :companies, only: %i(index show) do
+    resources :companies, only: %i() do
       resources :users, only: %i(index), controller: "companies/users"
     end
     resources :generations, only: %i(show)
