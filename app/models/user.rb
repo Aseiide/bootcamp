@@ -562,17 +562,6 @@ class User < ApplicationRecord
     course.practices.order('categories.position', 'practices.position')
   end
 
-  def top_unstarted_practice
-    # practices
-    not_unstarted_practices = practices.joins(:learnings)
-                                       .merge(Learning.complete.where(user_id: id))
-                                      #  .merge(Learning.started.where(user_id: id))
-                                      #  .merge(Learning.submitted.where(user_id: id))
-    practices.each do |practice|
-      break if not_unstarted_practices.find_by_id(practice.id).nil?
-    end
-  end
-
   def update_mentor_memo(new_memo)
     # ユーザーの「最終ログイン」にupdated_at値が利用されるため
     # メンターor管理者によるmemoカラムのupdateの際は、updated_at値の変更を防ぐ
@@ -597,6 +586,11 @@ class User < ApplicationRecord
     else
       logger.error "[Discord API] チャンネルURLを取得できません: #{login_name} (#{res.code} #{res.message})"
     end
+  end
+
+  def unstarted_practices
+    practices.where.missing(:learnings) | practices.joins(:learnings).where(learnings: { user_id: id, status: 'unstarted'})
+    # .order('categories.position', 'practices.position')
   end
 
   private
