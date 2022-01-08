@@ -589,11 +589,10 @@ class User < ApplicationRecord
   end
 
   def unstarted_practices
-    practices - (
-      practices.joins(:learnings).where(learnings: { user_id: id, status: 1})
-      .or(practices.joins(:learnings).where(learnings: { user_id: id, status: 2}))
-      .or(practices.joins(:learnings).where(learnings: { user_id: id, status: 3}))
-      )
+    practices -
+      practices.joins(:learnings).where(learnings: { user_id: id, status: 1 })
+               .or(practices.joins(:learnings).where(learnings: { user_id: id, status: 2 }))
+               .or(practices.joins(:learnings).where(learnings: { user_id: id, status: 3 }))
   end
 
   private
