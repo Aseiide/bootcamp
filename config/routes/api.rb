@@ -73,5 +73,6 @@ Rails.application.routes.draw do
       resources :users, only: %i(index), controller: "companies/users"
     end
     resources :generations, only: %i(show)
+    resources :markdown_tasks, only: %i(create)
   end
 end
