@@ -18,6 +18,11 @@ class EventTest < ActiveSupport::TestCase
     assert event.closing?
   end
 
+  test '#ended?' do
+    event = events(:event6)
+    assert event.ended?
+  end
+
   test '#participants' do
     event = events(:event2)
     participants = users(:hatsuno)
@@ -77,7 +82,7 @@ class EventTest < ActiveSupport::TestCase
     event = events(:event3)
     user = users(:hatsuno)
     event.send_notification(user)
-    assert Notification.where(user: user, path: "/events/#{event.id}").exists?
+    assert Notification.where(user: user, link: "/events/#{event.id}").exists?
   end
 
   test 'should be invalid when start_at >= end_at' do

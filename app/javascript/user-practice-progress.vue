@@ -5,12 +5,12 @@
     .completed-practices-progress__percentage-bar(
       aria-valuemax='100',
       aria-valuemin='0',
-      :aria-valuenow='percentage',
+      :aria-valuenow='ariaValuenow()',
       role='progressbar',
       :style='`width: ${roundedPercentage}`'
     )
   .completed-practices-progress__number
-    | {{ fraction }}
+    | {{ completedPracticesProgressNumber() }}
 </template>
 <script>
 export default {
@@ -25,7 +25,15 @@ export default {
   },
   computed: {
     roundedPercentage() {
-      return Math.round(this.percentage) + '%'
+      return this.user.graduated_on ? '100%' : Math.round(this.percentage) + '%'
+    }
+  },
+  methods: {
+    ariaValuenow() {
+      return this.user.graduated_on ? 100 : this.percentage
+    },
+    completedPracticesProgressNumber() {
+      return this.user.graduated_on ? '卒業' : this.fraction
     }
   }
 }

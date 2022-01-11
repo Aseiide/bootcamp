@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  namespace "api" do
+  namespace 'api' do
+    namespace 'admin' do
+      resource :count, controller: 'count', only: %i(show)
+    end
     resource :session, controller: "session", only: %i(create)
     resource :image, controller: "image", only: %i(create)
     resources :grasses, only: %i(show)
@@ -45,13 +48,12 @@ Rails.application.routes.draw do
     end
     resources :memos, only: %i(create update destroy)
     resources :mentor_memos, only: %i(update)
-    resources :tags, only: %i(index)
-    resources :pages, only: %i(update)
-    resources :questions, only: %i(show update)
+    resources :tags, only: %i(index update)
+    resources :pages, only: %i(index update)
+    resources :questions, only: %i(index show update)
     resources :followings, only: %i(create update destroy)
     namespace :products do
       resources :unchecked, only: %i(index)
-      resources :not_responded, only: %i(index)
       resources :unassigned, only: %i(index)
       resources :self_assigned, only: %i(index)
       resource :checker, only: %i(update), controller: 'checker'
@@ -67,5 +69,6 @@ Rails.application.routes.draw do
     resources :bookmarks, only: %i(index create destroy)
     resources :events, only: %i(index)
     resources :report_templates, only: %i(create update)
+    resources :markdown_tasks, only: %i(create)
   end
 end

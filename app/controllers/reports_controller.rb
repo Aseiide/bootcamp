@@ -17,6 +17,7 @@ class ReportsController < ApplicationController
   def index; end
 
   def show
+    @products = @report.user.products.not_wip.order(published_at: :desc)
     footprint!
     respond_to do |format|
       format.html

@@ -65,14 +65,14 @@ ja:
         organization: 現在の所属組織
         company: 企業
         created_at: 開始日
-        updated_at: 最終ログイン日時
+        updated_at: 最終ログイン
         nda: 秘密保持契約
         graduated_on: 卒業日
         adviser: アドバイザー
         trainee: 研修生
         job_seeking: 就職活動中
         retired_on: 退会日
-        free: 無料ユーザー
+        free: 無料
         avatar: ユーザーアイコン
         retire_reasons: 選択入力の退会理由
         retire_reason: 自由記入の退会理由
@@ -228,6 +228,8 @@ ja:
     followings: フォロー中
     self_assigned_all: 全て
     self_assigned_no_replied: 未返信
+    unchecked_no_replied: 未返信
+    unchecked_all: 全て
   watch:
     all: すべて
     true: コメントあり
@@ -257,10 +259,14 @@ ja:
         job_change: 転職や引っ越しなど環境の変化によって学びが継続できなくなったから
         training_end: 企業研修で利用をしていて研修期間が終了したため
   notification:
-    all: 全て
     announcement: お知らせ
     mention: メンション
     comment: コメント
     check: 提出物の確認
     watching: Watch中
     following_report: フォロー中
+  notification_mailer:
+    three_months_after_retirement:
+      subject: "[bootcamp] %{user}さんが退会してから3カ月が経過しました。"
+      retire_notice: "%{user}さんが退会してから3カ月が経過しました。"
+  retire_notice: "%{user}さんが退会してから3カ月が経過しました。"

@@ -8,7 +8,9 @@ class ReportCallbacks
 
     return unless report.first_public?
 
-    report.update!(published_at: report.updated_at)
+    report.published_at = report.updated_at
+    report.save!(validate: false)
+
     notify_users(report)
   end
 
@@ -71,6 +73,6 @@ class ReportCallbacks
   end
 
   def delete_notification(report)
-    Notification.where(path: "/reports/#{report.id}").destroy_all
+    Notification.where(link: "/reports/#{report.id}").destroy_all
   end
 end
