@@ -2,17 +2,33 @@
 .thread-list-item.has-assigned(:class='product.wip ? "is-wip" : ""')
   .thread-list-item__strip-label(v-if='unassigned || unchecked')
     .thread-list-item__elapsed-days.is-reply-warning.is-only-mentor(
-      v-if='isLatestProductSubmittedJust5days'
+      v-if='isAllSubmittedProducts(1)'
     )
-      | 5日経過
+      | 1日経過({{ isAllSubmittedProductsOfNumber(1) }})
     .thread-list-item__elapsed-days.is-reply-alert.is-only-mentor(
-      v-else-if='isLatestProductSubmittedJust6days'
+      v-else-if='isAllSubmittedProducts(2)'
     )
-      | 6日経過
+      | 2日経過({{ isAllSubmittedProductsOfNumber(2) }})
+    .thread-list-item__elapsed-days.is-reply-alert.is-only-mentor(
+      v-else-if='isAllSubmittedProducts(3)'
+    )
+      | 3日経過({{ isAllSubmittedProductsOfNumber(3) }})
+    .thread-list-item__elapsed-days.is-reply-alert.is-only-mentor(
+      v-else-if='isAllSubmittedProducts(4)'
+    )
+      | 4日経過({{ isAllSubmittedProductsOfNumber(4) }})
+    .thread-list-item__elapsed-days.is-reply-alert.is-only-mentor(
+      v-else-if='isAllSubmittedProducts(5)'
+    )
+      | 5日経過({{ isAllSubmittedProductsOfNumber(5) }})
+    .thread-list-item__elapsed-days.is-reply-alert.is-only-mentor(
+      v-else-if='isAllSubmittedProducts(6)'
+    )
+      | 6日経過({{ isAllSubmittedProductsOfNumber(6) }})
     .thread-list-item__elapsed-days.is-reply-deadline.is-only-mentor(
-      v-else-if='isLatestProductSubmittedOver7days'
+      v-else-if='isAllSubmittedProducts(7)'
     )
-      | 7日以上経過
+      | 7日以上経過({{ isAllSubmittedProductsOfNumber(7) }})
   .thread-list-item__inner
     .thread-list-item__rows
       .thread-list-item__row
@@ -47,6 +63,12 @@
               time.a-meta(v-if='product.updated_at')
                 span.a-meta__label 更新
                 | {{ product.updated_at }}
+            .thread-list-item-meta__item(
+              v-if='(product.selectedTab = unassigned)'
+            )
+              time.a-meta(v-if='calcElapsedTimes(product) < 7')
+                span.a-meta__label 次の経過日数まで
+                | 約{{ untilNextElapsedDays(product) }}時間
 
       hr.thread-list-item__row-separator(v-if='product.comments.size > 0')
       .thread-list-item__row(v-if='product.comments.size > 0')
@@ -99,9 +121,13 @@
                 | 〜 {{ product.mentor_last_commented_at }}（メンター）
 
     .stamp.stamp-approve(v-if='product.checks.size > 0')
-      h2.stamp__content.is-title 確認済
-      time.stamp__content.is-created-at {{ product.checks.last_created_at }}
-      .stamp__content.is-user-name {{ product.checks.last_user_login_name }}
+      h2.stamp__content.is-title
+        | 確認済
+      time.stamp__content.is-created-at
+        | {{ product.checks.last_created_at }}
+      .stamp__content.is-user-name
+        .stamp__content-inner
+          | {{ product.checks.last_user_login_name }}
     .thread-list-item__assignee.is-only-mentor(
       v-if='isMentor && product.checks.size == 0'
     )
@@ -122,6 +148,7 @@
         )
 </template>
 <script>
+import { formatDistance } from 'date-fns'
 import ProductChecker from './product_checker'
 export default {
   components: {
@@ -131,25 +158,26 @@ export default {
     product: { type: Object, required: true },
     isMentor: { type: Boolean, required: true },
     currentUserId: { type: String, required: true },
-    latestProductSubmittedJust5days: {
+    allSubmittedProducts: {
       type: Object,
       required: false,
       default: null
     },
-    latestProductSubmittedJust6days: {
-      type: Object,
-      required: false,
-      default: null
-    },
-    latestProductSubmittedOver7days: {
+    allSubmittedProductsOfNumber: {
       type: Object,
       required: false,
       default: null
     }
   },
+  data() {
+    return { formatDistance }
+  },
   computed: {
+    updatedAt() {
+      return Date.parse(this.product.updated_at_date_time)
+    },
     roleClass() {
-      return `is-${this.product.user.role}`
+      return `is-${this.product.user.primary_role}`
     },
     daimyoClass() {
       return { 'is-daimyo': this.product.user.daimyo }
@@ -159,27 +187,6 @@ export default {
         ? `★${this.product.practice.title}の提出物`
         : `${this.product.practice.title}の提出物`
     },
-    isLatestProductSubmittedJust5days() {
-      if (this.latestProductSubmittedJust5days !== null) {
-        return this.product.id === this.latestProductSubmittedJust5days.id
-      } else {
-        return false
-      }
-    },
-    isLatestProductSubmittedJust6days() {
-      if (this.latestProductSubmittedJust6days !== null) {
-        return this.product.id === this.latestProductSubmittedJust6days.id
-      } else {
-        return false
-      }
-    },
-    isLatestProductSubmittedOver7days() {
-      if (this.latestProductSubmittedOver7days !== null) {
-        return this.product.id === this.latestProductSubmittedOver7days.id
-      } else {
-        return false
-      }
-    },
     unassigned() {
       return location.pathname === '/products/unassigned'
     },
@@ -188,10 +195,31 @@ export default {
     },
     notRespondedSign() {
       return (
-        this.product.self_last_comment_at_date_time >
-          this.product.mentor_last_comment_at_date_time ||
+        this.product.self_last_commented_at_date_time >
+          this.product.mentor_last_commented_at_date_time ||
         this.product.comments.size === 0
       )
+    }
+  },
+  methods: {
+    untilNextElapsedDays(product) {
+      const elapsedTimes = this.calcElapsedTimes(product)
+      return Math.floor((Math.ceil(elapsedTimes) - elapsedTimes) * 24)
+    },
+    calcElapsedTimes(product) {
+      const time =
+        product.published_at_date_time || product.created_at_date_time
+      return (new Date() - Date.parse(time)) / 1000 / 60 / 60 / 24
+    },
+    isAllSubmittedProducts(n) {
+      if (this.allSubmittedProducts[n] !== undefined) {
+        return this.product.id === this.allSubmittedProducts[n].id
+      } else {
+        return false
+      }
+    },
+    isAllSubmittedProductsOfNumber(n) {
+      return this.allSubmittedProductsOfNumber[n].length
     }
   }
 }

@@ -19,9 +19,8 @@
           :product='product',
           :currentUserId='currentUserId',
           :isMentor='isMentor',
-          :latestProductSubmittedJust5days='latestProductSubmittedJust5days',
-          :latestProductSubmittedJust6days='latestProductSubmittedJust6days',
-          :latestProductSubmittedOver7days='latestProductSubmittedOver7days'
+          :allSubmittedProducts='allSubmittedProducts',
+          :allSubmittedProductsOfNumber='allSubmittedProductsOfNumber'
         )
       unconfirmed-links-open-button(
         v-if='isMentor && selectedTab != "all"',
@@ -56,9 +55,8 @@ export default {
       totalPages: 0,
       currentPage: Number(this.getPageValueFromParameter()) || 1,
       loaded: false,
-      latestProductSubmittedJust5days: null,
-      latestProductSubmittedJust6days: null,
-      latestProductSubmittedOver7days: null,
+      allSubmittedProducts: null,
+      allSubmittedProductsOfNumber: null,
       params: this.getParams()
     }
   },
@@ -119,12 +117,9 @@ export default {
             location.pathname === '/products/unassigned' ||
             location.pathname === '/products/unchecked'
           ) {
-            this.latestProductSubmittedJust5days =
-              json.latest_product_submitted_just_5days
-            this.latestProductSubmittedJust6days =
-              json.latest_product_submitted_just_6days
-            this.latestProductSubmittedOver7days =
-              json.latest_product_submitted_over_7days
+            this.allSubmittedProducts = json.all_submitted_products
+            this.allSubmittedProductsOfNumber =
+              json.all_submitted_products_of_number
           }
           this.totalPages = json.total_pages
           this.products = []
@@ -134,7 +129,7 @@ export default {
           this.loaded = true
         })
         .catch((error) => {
-          console.warn('Failed to parsing', error)
+          console.warn(error)
         })
     },
     getPageValueFromParameter() {
@@ -147,6 +142,7 @@ export default {
       this.currentPage = pageNumber
       this.getProductsPerPage()
       history.pushState(null, null, this.newUrl(pageNumber))
+      window.scrollTo(0, 0)
     },
     newUrl(pageNumber) {
       if (this.params.target) {
