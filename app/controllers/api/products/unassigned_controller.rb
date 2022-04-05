@@ -9,8 +9,20 @@ class API::Products::UnassignedController < API::BaseController
                 .not_wip
                 .list
                 .order_for_not_wip_list
-    @latest_product_submitted_just_5days = @products.find { |product| product.elapsed_days == 5 }
-    @latest_product_submitted_just_6days = @products.find { |product| product.elapsed_days == 6 }
-    @latest_product_submitted_over_7days = @products.find { |product| product.elapsed_days >= 7 }
+    @all_submitted_products = @products
+                              .group_by { |product| product.elapsed_days >= 7 ? 7 : product.elapsed_days }
+                              .transform_values(&:first)
+    @all_submitted_products_of_number = @products
+                                        .group_by { |product| product.elapsed_days >= 7 ? 7 : product.elapsed_days }
+  end
+
+  def counts
+    products = Product
+               .unassigned
+               .unchecked
+               .not_wip
+    @passed5 = products.count { |product| product.elapsed_days == 5 }
+    @passed6 = products.count { |product| product.elapsed_days == 6 }
+    @over7 = products.count { |product| product.elapsed_days >= 7 }
   end
 end

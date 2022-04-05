@@ -3,4 +3,6 @@ json.products do
     json.partial! "api/products/product", product: product
   end
 end
-json.total_pages @products.page(1).total_pages
+json.total_pages 1
+json.all_submitted_products @all_submitted_products
+json.all_submitted_products_of_number @all_submitted_products_of_number
